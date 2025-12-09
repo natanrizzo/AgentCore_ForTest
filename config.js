@@ -1,6 +1,8 @@
+require('dotenv').config();
+
 const config = {
     elevenlabs: {
-        api_key: 'sk_3db17d18b2ee7f43ef5f6da01166a5d7f48d0d7191fa98c1',
+        api_key: process.env.ELEVENLABS_API_KEY,
         agent_id: 'agent_2101k6144df8e9k80spt9h8m63yq',
         base_url: 'https://api.elevenlabs.io',
         models: [
