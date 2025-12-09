@@ -1,0 +1,43 @@
+
+# -------------------------------------------------------------
+# 1. Simula a Conversa e Salva o JSON
+# -------------------------------------------------------------
+
+{{ 
+    $context.variables.requestStartTime = Date.now();
+    $context.variables.lastRequest = {
+        "simulation_specification": {
+        "simulated_user_config": {
+            "simulated_user_config": {
+            "prompt": {
+                "llm": $context.variables.llm
+            }
+            }
+        },
+        "partial_conversation_history": partialHistory,
+        "dynamic_variables": dynamicVariables,
+        "agent_config": {
+            "agent_id": $context.variables.AGENT_ID
+        }
+        },
+        "new_turns_limit": maxNewTurns
+    };
+}}
+
+# @name simulateResponse
+# @no-log
+POST {{baseURL}}/v1/convai/agents/{{AGENT_ID}}/simulate-conversation
+xi-api-key: {{ELEVEN_API_KEY}}
+Content-Type: application/json
+
+{{ $context.variables.lastRequest }}
+
+{{
+    const { saveSimulateConversationResponse } = require('../../PostRequest.js');
+    try {
+        await saveSimulateConversationResponse({ response, context: $context });
+    } catch (error) {
+        console.error('[HTTPYac] Erro no script pós-requisição:', error);
+    }
+}}
+###

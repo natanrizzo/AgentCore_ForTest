@@ -1,0 +1,11 @@
+ms: 4189
+datetime_stamp: '2025-11-27T19:04:28.009Z'
+generator_name: tts-greeting_agent_disclosure
+model: eleven_v3
+voice: FF03
+duration_seconds: 5s
+stability: 0.5
+similarity_boost: 0.75
+speed: 1
+style: 0
+text: Olá, Boa Tarde! Quem fala é o Felipe Farah, e eu procuro pelo Natan Lima, por gentileza.

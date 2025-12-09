@@ -1,0 +1,84 @@
+{{
+    const trainingData = {
+        "1": "Olá, meu nome é Felipe Farah. Tudo bem com você? Você conhece a Prudential?",
+    }
+
+    const input = trainingData["1"]
+
+    const config = require('../../config.js').config;
+    config.elevenlabs.voice.name = "FF03"
+    exports.current_voice = config.elevenlabs.voice;
+    exports.input = input;
+    exports.voices = ["Masculino1", "Feminino1", "FF03"];
+    exports.models = ["eleven_v3", "eleven_flash_v2_5", "eleven_turbo_v2_5"] ?? config.elevenlabs.models;
+    exports.config = config;
+}}
+# Configuração do Arquivo e Requisição
+@endpoint = tts
+@title = test_voices
+@dict = alias
+
+# Variáveis do Sistema
+@OUT_DIR =  {{ "./httpyac/tests/out" ?? config.audio.output_path }}
+@ELEVEN_API_KEY = {{ "sk_3db17d18b2ee7f43ef5f6da01166a5d7f48d0d7191fa98c1" ?? config.elevenlabs.api_key }}
+@baseURL = {{ "https://api.elevenlabs.io" ?? config.elevenlabs.base_url }}
+@VOICE_ALIAS = {{ current_voice.name }}
+
+# Configuração da Voz
+@stability = {{ 0.5 ?? config.text_to_speech.stability }}
+@similarity_boost =  {{ 0.75 ?? config.text_to_speech.similarity_boost }}
+@speed =  {{ 1.0 ?? config.text_to_speech.speed }}
+@style =  {{ 0.0 ?? config.text_to_speech.style }}
+
+###
+{{
+    const loopControl = {
+        model_index: 0,
+        voice_index: 0
+    };
+
+    exports.loopControl = loopControl;
+}}
+
+# @loop while loopControl.model_index < models.length
+# @name generateAudio
+# @no-log
+POST {{baseURL}}/v1/text-to-speech/{{current_voice.id}}}}
+xi-api-key: {{ELEVEN_API_KEY}}
+Content-Type: application/json
+Accept: audio/mpeg
+
+{
+    "text": "{{ input }}",
+    "model_id": "{{ models[loopControl.model_index] }}",
+    "voice_settings": {
+        "stability": {{stability}},
+        "similarity_boost": {{similarity_boost}},
+        "speed": {{speed}},
+        "style": {{style}}
+    }
+}
+
+{{
+    const { saveAudioResponse } = require('../../common/PostRequest.js');
+    try {
+        // Atualiza o Voice Alias para o nome da voz atual para nomenclatura do arquivo.
+        $context.variables.VOICE_ALIAS = current_voice.name;
+        await saveAudioResponse({ response, context: $context });
+    } catch (error) {
+        console.error('[HTTPYac] Erro no script pós-requisição:', error);
+    } finally {
+        // Controle de loop
+        loopControl.voice_index++;
+        
+        // Se o índice da voz exceder o número de vozes, reseta e incrementa o modelo
+        if (loopControl.voice_index >= voices.length) {
+            loopControl.voice_index = 0;
+            loopControl.model_index++;
+        }
+
+        // Atualiza a voz atual para a próxima voz no loop
+        config.elevenlabs.voice.name = voices[loopControl.voice_index];
+        current_voice = config.elevenlabs.voice;
+    }
+}}

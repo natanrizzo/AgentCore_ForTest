@@ -1,0 +1,103 @@
+# @import ./TPL_simulation_base.http
+
+{{
+  const config = require("../../config.js").config;
+  exports.config = config;
+}}
+
+# ---------------------------------
+# Variáveis Globais
+# ---------------------------------
+@ELEVEN_API_KEY = {{ "sk_3db17d18b2ee7f43ef5f6da01166a5d7f48d0d7191fa98c1" ?? config.elevenlabs.api_key }}
+@AGENT_ID = {{ "agent_2101k6144df8e9k80spt9h8m63yq" ?? config.elevenlabs.agent_id }}
+@baseURL = {{ "https://api.elevenlabs.io" ?? config.elevenlabs.base_url }}
+
+# ---------------------------------
+# Configuração do Teste de Simulação
+# ---------------------------------
+
+# Diretório de saída para os JSONs de simulação
+@JSON_OUT_DIR = ./http-audios/simulation/out
+
+# Componentes para o nome do arquivo (para o helper)
+@endpoint = SIMUL
+@title = Apresentação
+@dict = Alias
+
+# Modelo
+@llm = gemini-2.5-flash
+
+# Variáveis para a simulação da conversa
+@lead =  Natan Lima
+@lead_gender = Masculino
+@vendor = Felipe Farah
+@vendor_gender = Masculino
+@enterprise = Prudential
+@recommender = Marcio Dantas
+@recommender_gender = Masculino
+@job = Médico
+
+{{
+  exports.partialHistory = [
+    {
+      "role": "user",
+      "message": "Quem fala?",
+      "time_in_call_secs": 1
+    },
+    {
+      "role": "agent",
+      "message": "Olá, Boa Tarde! Quem fala é o Felipe Farah, e eu procuro pelo Natan Lima, por gentileza.",
+      "time_in_call_secs": 3
+    },
+    {
+      "role": "user",
+      "message": "Sou eu.",
+      "time_in_call_secs": 8
+    },
+    {
+      "role": "agent",
+      "message": "Ótimo! Aqui é o Felipe Farah. Tudo bem com você?",
+      "time_in_call_secs": 11
+    },
+    {
+      "role": "user",
+      "message": "Bom demais, e você?",
+      "time_in_call_secs": 14
+    },
+    {
+      "role": "agent",
+      "message": "Que bom! Maravilha! O motivo do meu contato, Natan Lima, é que o Márcio Dantas me pediu pra te ligar. Ele avisou?",
+      "time_in_call_secs": 16
+    },
+    {
+      "role": "user",
+      "message": "Ele avisou sim.",
+      "time_in_call_secs": 22
+    },
+    {
+      "role": "agent",
+      "message": "Que ótimo! Certo! E o motivo do meu contato é que eu atendo seus colegas pela Prudential. Você já conhece a empresa, ou é nosso cliente?",
+      "time_in_call_secs": 24
+    },
+    {
+      "role": "user",
+      "message": "Não, não conheço não",
+      "time_in_call_secs": 24 
+    }
+  ];
+
+  exports.dynamicVariables = {
+    lead: $context.variables.lead,
+    lead_gender: $context.variables.lead_gender,
+    vendor: $context.variables.vendor,
+    vendor_gender: $context.variables.vendor_gender,
+    enterprise: $context.variables.enterprise,
+    recommender_name: $context.variables.recommender,
+    recommender_gender: $context.variables.recommender_gender,
+    job: $context.variables.job,
+  };
+  exports.maxNewTurns = 6;
+}}
+
+###
+# @ref simulateResponse

@@ -1,0 +1,94 @@
+# @import ./TPL_simulation_base.http
+
+{{
+  const config = require("../../config.js").config;
+  exports.config = config;
+}}
+
+# ---------------------------------
+# Variáveis Globais
+# ---------------------------------
+@ELEVEN_API_KEY = {{ "sk_3db17d18b2ee7f43ef5f6da01166a5d7f48d0d7191fa98c1" ?? config.elevenlabs.api_key }}
+@AGENT_ID = {{ "agent_2101k6144df8e9k80spt9h8m63yq" ?? config.elevenlabs.agent_id }}
+@baseURL = {{ "https://api.elevenlabs.io" ?? config.elevenlabs.base_url }}
+
+# ---------------------------------
+# Configuração do Teste de Simulação
+# ---------------------------------
+
+# Diretório de saída para os JSONs de simulação
+@JSON_OUT_DIR = ./http-audios/simulation/out
+
+# Componentes para o nome do arquivo (para o helper)
+@endpoint = SIMUL
+@title = NEG-Não Avisado
+@dict = Alias
+
+# Modelo
+# Default = gemini-2.5-flash-lite
+@llm = gpt-5
+
+# Variáveis para a simulação da conversa
+@lead =  Natan Lima
+@lead_gender = Masculino
+@vendor = Felipe Farah
+@vendor_gender = Masculino
+@enterprise = Prudential
+@recommender = Marcio Dantas
+@recommender_gender = Masculino
+@job = Médico
+
+{{
+  exports.partialHistory = [
+    {
+      "role": "user",
+      "message": "Alô, boa tarde, quem fala?",
+      "time_in_call_secs": 0
+    },
+    {
+      "role": "agent",
+      "message": "Olá, Boa Tarde! Quem fala é o Felipe Farah, e eu procuro pelo Natan Lima, por gentileza.",
+      "time_in_call_secs": 3
+    },
+    {
+      "role": "user",
+      "message": "Isso, ele mesmo.",
+      "time_in_call_secs": 8
+    },
+    {
+      "role": "agent",
+      "message": "Ótimo! Aqui é o Felipe Farah. Tudo bem com você?",
+      "time_in_call_secs": 11
+    },
+    {
+      "role": "user",
+      "message": "Sim, tudo certo.",
+      "time_in_call_secs": 14
+    },
+    {
+      "role": "agent",
+      "message": "Maravilha! O motivo do meu contato, Natan Lima, é que o Márcio Dantas me pediu pra te ligar. Ele avisou?",
+      "time_in_call_secs": 16
+    },
+    {
+      "role": "user",
+      "message": "Não, não avisou.",
+      "time_in_call_secs": 23
+    },
+  ];
+
+  exports.dynamicVariables = {
+    lead: $context.variables.lead,
+    lead_gender: $context.variables.lead_gender,
+    vendor: $context.variables.vendor,
+    vendor_gender: $context.variables.vendor_gender,
+    enterprise: $context.variables.enterprise,
+    recommender_name: $context.variables.recommender,
+    recommender_gender: $context.variables.recommender_gender,
+    job: $context.variables.job,
+  };
+  exports.maxNewTurns = 10000;
+}}
+
+###
+# @ref simulateResponse

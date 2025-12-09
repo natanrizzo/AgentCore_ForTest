@@ -1,0 +1,39 @@
+# @import ../TPL_tts_base.http
+
+# Variáveis do Prompt do Agente.
+{{
+  const trainingData = {
+    "1": "Certo. Tem algum dia à noite que você saiba que não tem nada marcado?"
+  };
+
+  const input = trainingData["1"]; // Se = trainingData itera sobre todos;
+
+  // Arquivo sepradados chamado config.js
+  const config = require("../../../config.js").config;
+  config.elevenlabs.voice.name = "FF03"
+  exports.voice = config.elevenlabs.voice;
+  exports.models = ["eleven_v3", "eleven_flash_v2_5", "eleven_turbo_v2_5"] ?? config.elevenlabs.models;
+  exports.input = input;
+  exports.config = config;
+}}
+
+# Configuração do Arquivo e Requisição
+@endpoint = tts
+@title = scheduling_probe_free_night
+@dict = alias
+
+# Variáveis do Sistema
+@OUT_DIR =  {{ "./httpyac/tts-audios/scheduling/out" ?? config.audio.output_path }}
+@ELEVEN_API_KEY = {{ "sk_3db17d18b2ee7f43ef5f6da01166a5d7f48d0d7191fa98c1" ?? config.elevenlabs.api_key }}
+@VOICE_ALIAS = {{ voice.name }}
+@VOICE_ID = {{ voice.id }}
+@baseURL = {{ "https://api.elevenlabs.io" ?? config.elevenlabs.base_url }}
+
+# Configuração da Voz
+@stability = {{ 0.5 ?? config.text_to_speech.stability }}
+@similarity_boost =  {{ 0.75 ?? config.text_to_speech.similarity_boost }}
+@speed =  {{ 1.0 ?? config.text_to_speech.speed }}
+@style =  {{ 0.0 ?? config.text_to_speech.style }}
+
+###
+# @ref generateAudio

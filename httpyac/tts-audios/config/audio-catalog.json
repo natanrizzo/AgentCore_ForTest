@@ -1,0 +1,27 @@
+{
+    "audios": {
+        "greeting_ios_screening_teste": {
+            "category": "greeting",
+            "title": "greeting_ios_screening_teste",
+            "input": "Olá! Aqui é o {{vendor}}. O {{recommender_name}} pediu para eu entrar em contato com o {{lead}}. É sobre um assunto do interesse dele.",
+            "voice": {
+                "alias": "FF03",
+                "stability": 0.5,
+                "similarity_boost": 0.75,
+                "speed": 1,
+                "style": 0
+            },
+            "models": [
+                "eleven_v3",
+                "eleven_flash_v2_5",
+                "eleven_turbo_v2_5"
+            ],
+            "variables": {
+                "saudacao": "Boa Tarde",
+                "vendor": "Felipe Farah",
+                "lead": "Natan Lima",
+                "recommender_name": "Seu Recomendador"
+            }
+        }
+    }
+}
